@@ -4,7 +4,7 @@ This repositry consists of the backend code which exposes REST API's for the UI 
 # Pre-requists
 1) Nodejs version 12.0 or above.
 2) MongoDB version 4.0 or above.
-Optional - Microsoft VS-code as IDE or any other familiar IDE.
+3) Optional - Microsoft VS-code as IDE or any other familiar IDE.
 
 # How to start the application
 1) Clone the code from the repositry.
@@ -16,4 +16,4 @@ Optional - Microsoft VS-code as IDE or any other familiar IDE.
     => npm start
 5) See in the console you'll find "APP running on PORT : 3030" printed which means the application has started successfully.
 6) To visit the Swagger-UI for API documentation visit URL http://localhost:3030/api-docs in a web browser.
-Optional - To enable default super user creation change the environment variable IS_DEFAULT_USER_ENABLE value to "1" in .env file.
+7) Optional - To enable default super user creation change the environment variable IS_DEFAULT_USER_ENABLE value to "1" in .env file.
