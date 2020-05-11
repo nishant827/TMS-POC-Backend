@@ -45,6 +45,133 @@ mongoController.insert = (collectionName, payload) => {
 }
 
 /**
+ * The update method will update the document in given collection name
+ * @param collectionName: mongoose collection name
+ * @param payload: document to update
+ * @param query: mongoose query
+ * @author Bindu Latha Nuthalapati
+ * @version 1.0
+*/
+mongoController.update = (collectionName, payload, query) => {
+    return new Promise((resolve, reject) => {
+        try {
+            getMongoConnection().then((connection) => {
+                connection.collection(collectionName).update(query, payload, { upsert: true }, (err, doc) => {
+                    if (err) {
+                        console.error(`Mongo Updation Error : ${err}`);
+                        let message = '';
+                        for (let key in err.errors) {
+                            message = err.errors[key].message;
+                            console.error("message", err.errors[key].message)
+                        }
+                        reject({
+                            status: false,
+                            result: { message: message }
+                        });
+                    } else {
+                        resolve({
+                            status: true,
+                            result: { data: doc._doc }
+                        });
+                    }
+                });
+            }, (error) => {
+                console.error(`Error in getting connection ${collectionName} : ${error}`);
+                reject(error);
+            });
+        }
+        catch (e) {
+            console.error(`Error catched in updating document : ${e}`);
+            reject(e);
+        }
+    });
+}
+
+/**
+ * The find method will fetch all the documents from given collection name
+ * @param collectionName: mongoose collection name
+ * @author Bindu Latha Nuthalapati
+ * @version 1.0
+*/
+mongoController.find = (collectionName) => {
+    return new Promise((resolve, reject) => {
+        try {
+            getMongoConnection().then((connection) => {
+                connection.collection(collectionName).find({}, (err, doc) => {
+                    if (err) {
+                        console.error(`Mongo Find Error : ${err}`);
+                        let message = '';
+                        for (let key in err.errors) {
+                            message = err.errors[key].message;
+                            console.error("message", err.errors[key].message)
+                        }
+                        reject({
+                            status: false,
+                            result: { message: message }
+                        });
+                    } else {
+                        resolve({
+                            status: true,
+                            result: { data: doc._doc }
+                        });
+                    }
+                });
+            }, (error) => {
+                console.error(`Error in getting connection ${collectionName} : ${error}`);
+                reject(error);
+            });
+        }
+        catch (e) {
+            console.error(`Error catched while fetching the documents : ${e}`);
+            reject(e);
+        }
+    });
+}
+
+/**
+ * The delete method will delete the document from given collection name
+ * @param collectionName: mongoose collection name
+ * @param query: mongoose query
+ * @author Bindu Latha Nuthalapati
+ * @version 1.0
+*/
+mongoController.delete = (collectionName, query) => {
+    return new Promise((resolve, reject) => {
+        try {
+            getMongoConnection().then((connection) => {
+                connection.collection(collectionName).deleteOne(query, (err, doc) => {
+                    if (err) {
+                        console.error(`Mongo Remove Error : ${err}`);
+                        let message = '';
+                        for (let key in err.errors) {
+                            message = err.errors[key].message;
+                            console.error("message", err.errors[key].message)
+                        }
+                        reject({
+                            status: false,
+                            result: { message: message }
+                        });
+                    } else {
+                        resolve({
+                            status: true,
+                            result: { data: doc._doc }
+                        });
+                    }
+                });
+            }, (error) => {
+                console.error(`Error in getting connection ${collectionName} : ${error}`);
+                reject(error);
+            });
+        }
+        catch (e) {
+            console.error(`Error catched while removing the document : ${e}`);
+            reject(e);
+        }
+    });
+}
+
+
+/**
  * The findOne method will find record based on the input query
  * @param collectionName: mongoose collection name
  * @param query: mongoose query
