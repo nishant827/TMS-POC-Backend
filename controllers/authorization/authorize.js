@@ -18,7 +18,9 @@ router.post("/login", (req, res) => {
             if (user.status && user.result && user.result.data) {
                 user = user.result.data;
                 let token = utils.generateJWT(user.email);
-                res.status(200).send({ status: true, result: { data: { token: token }, message: `Authentication successful!` } });
+                delete user.password;
+                // console.log(`User : ${JSON.stringify(user, null, 2)}`);
+                res.status(200).send({ status: true, result: { data: { token: token, user: user }, message: `Authentication successful!` } });
             }
             else {
                 res.status(401).send({ status: false, result: { data: user, message: `Incorrect email or password.` } });
