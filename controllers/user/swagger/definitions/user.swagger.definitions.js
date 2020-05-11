@@ -49,13 +49,13 @@ module.exports = {
         "gender": {
             "type": "string",
             "enum": ["M", "F", "O"],
-            "default": " M",
+            "default": "M",
             "uniqueItems": false
         },
         "role": {
             "type": "string",
             "enum": ["SA", "ZH", "TECH"],
-            "default": " TECH",
+            "default": "TECH",
             "uniqueItems": false
         },
     }

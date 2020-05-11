@@ -48,8 +48,9 @@ utils.verifyJWT = (req, res, next) => {
                 // console.log(`decoded 2 : ${JSON.stringify(decoded, null, 2)}`);
                 try {
                     mongoController.findOne(usersCollectionName, { email: decoded.userEmail }).then((user) => {
-                        console.log(`User`, JSON.stringify(user, null, 2));
                         if (user.status && user.result && user.result.data) {
+                            delete user.result.data.password;
+                            // console.log(`User`, JSON.stringify(user, null, 2));
                             req.user = user.result.data;
                             next();
                         }
