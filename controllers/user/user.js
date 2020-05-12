@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoController = require("../../dbConfig/mongo.controller");
 const utils = require("../../utils/utils");
 const config = require("../../configurations/config");
+const ObjectId = require('mongodb').ObjectID
 const usersCollectionName = config.MONGO_CONFIG.DB_COLLECTIONS.USERS_COLLECTION_NAME;
 
 router.post("/user/register", utils.verifyJWT, (req, res) => {
@@ -49,7 +50,7 @@ router.get('/user/list', utils.verifyJWT, (req, res) => {
             }
         }, (error) => {
             console.error(`Error occured in /user GET API : ${error}`);
-            res.status(500).send({ status: false, result: { error: e, message: `Error while fetching users try after some time.` } });
+            res.status(500).send({ status: false, result: { error: error, message: `Error while fetching users try after some time.` } });
         })
     }
     catch (e) {
@@ -59,15 +60,16 @@ router.get('/user/list', utils.verifyJWT, (req, res) => {
 })
 
 router.put('/user/update/:id', utils.verifyJWT, (req, res) => {
-    console.log("request in update",req)
+    console.log("request in update", req)
     try {
-        mongoController.update(usersCollectionName, req.body, { _id: req.params.id }).then(result => {
+        mongoController.update(usersCollectionName, req.body, { _id: ObjectId(req.params.id) }).then(result => {
+            console.log("result", result)
             if (result && result.status) {
                 res.json({ status: 200, message: "User updated successfully" })
             }
         }, (error) => {
             console.error(`Error occured in /user PUT API : ${error}`);
-            res.status(500).send({ status: false, result: { error: e, message: `Error while updating the user try after some time.` } });
+            res.status(500).send({ status: false, result: { error: error, message: `Error while updating the user try after some time.` } });
         })
     }
     catch (e) {
@@ -78,13 +80,13 @@ router.put('/user/update/:id', utils.verifyJWT, (req, res) => {
 
 router.delete('/user/remove/:id', utils.verifyJWT, (req, res) => {
     try {
-        mongoController.delete(usersCollectionName, { _id: req.params.id }).then(result => {
+        mongoController.delete(usersCollectionName, { _id: ObjectId(req.params.id) }).then(result => {
             if (result && result.status) {
                 res.json({ status: 200, message: "User deleted successfully" })
             }
         }, (error) => {
             console.error(`Error occured in /user DELETE API : ${error}`);
-            res.status(500).send({ status: false, result: { error: e, message: `Error while deleting the user try after some time.` } });
+            res.status(500).send({ status: false, result: { error: error, message: `Error while deleting the user try after some time.` } });
         })
     }
     catch (e) {

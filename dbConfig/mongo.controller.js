@@ -56,7 +56,7 @@ mongoController.update = (collectionName, payload, query) => {
     return new Promise((resolve, reject) => {
         try {
             getMongoConnection().then((connection) => {
-                connection.collection(collectionName).updateOne(query, { $set: payload }, { new: true }, (err, doc) => {
+                connection.collection(collectionName).update(query, { $set: payload }, (err, doc) => {
                     if (err) {
                         console.error(`Mongo Updation Error : ${err}`);
                         let message = '';
@@ -69,7 +69,7 @@ mongoController.update = (collectionName, payload, query) => {
                             result: { message: message }
                         });
                     } else {
-                        console.log("update result", JSON.parse(doc))
+                        console.log("update result", doc)
                         resolve({
                             status: true
                         });
