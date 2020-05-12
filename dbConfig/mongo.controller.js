@@ -55,6 +55,9 @@ mongoController.insert = (collectionName, payload) => {
 mongoController.update = (collectionName, payload, query) => {
     return new Promise((resolve, reject) => {
         try {
+            if (query._id) {
+                query._id = mongoController.convertToObjectId(query._id);
+            }
             getMongoConnection().then((connection) => {
                 connection.collection(collectionName).update(query, { $set: payload }, (err, doc) => {
                     if (err) {
@@ -139,6 +142,9 @@ mongoController.find = (collectionName, query) => {
 mongoController.delete = (collectionName, query) => {
     return new Promise((resolve, reject) => {
         try {
+            if (query._id) {
+                query._id = mongoController.convertToObjectId(query._id);
+            }
             getMongoConnection().then((connection) => {
                 connection.collection(collectionName).deleteOne(query, (err, doc) => {
                     if (err) {

@@ -6,19 +6,22 @@ module.exports = {
         ],
         "summary": "Updates an user in system",
         "description": "Updates an user in system",
-        "parameters": [{
-            "name": "user",
-            "in": "body",
-            "description": "USER that we want to update",
-            "schema": {
-                "$ref": "#/definitions/User"
+        "parameters": [
+            {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "type": "string"
+            },
+            {
+                "name": "user",
+                "in": "body",
+                "description": "USER that we want to update",
+                "schema": {
+                    "$ref": "#/definitions/User"
+                }
             }
-        }, {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-        }],
+        ],
         "produces": [
             "application/json"
         ],
