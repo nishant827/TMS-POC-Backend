@@ -3,7 +3,7 @@ var mongoController = {};
 
 /**
  * The insert method will insert document in  given collection name
- * @param collectionName: mongoose collection name
+ * @param collectionName: mongodb collection name
  * @param payload: document to insert
  * @author Nishant Singh Gawer
  * @version 1.0
@@ -46,9 +46,9 @@ mongoController.insert = (collectionName, payload) => {
 
 /**
  * The update method will update the document in given collection name
- * @param collectionName: mongoose collection name
+ * @param collectionName: mongodb collection name
  * @param payload: document to update
- * @param query: mongoose query
+ * @param query: mongodb query
  * @author Bindu Latha Nuthalapati
  * @version 1.0
 */
@@ -56,7 +56,7 @@ mongoController.update = (collectionName, payload, query) => {
     return new Promise((resolve, reject) => {
         try {
             getMongoConnection().then((connection) => {
-                connection.collection(collectionName).update(query, payload, { upsert: true }, (err, doc) => {
+                connection.collection(collectionName).updateOne(query, { $set: payload }, { new: true }, (err, doc) => {
                     if (err) {
                         console.error(`Mongo Updation Error : ${err}`);
                         let message = '';
@@ -69,9 +69,9 @@ mongoController.update = (collectionName, payload, query) => {
                             result: { message: message }
                         });
                     } else {
+                        console.log("update result", JSON.parse(doc))
                         resolve({
-                            status: true,
-                            result: { data: doc._doc }
+                            status: true
                         });
                     }
                 });
@@ -89,15 +89,16 @@ mongoController.update = (collectionName, payload, query) => {
 
 /**
  * The find method will fetch all the documents from given collection name
- * @param collectionName: mongoose collection name
+ * @param collectionName: mongodb collection name
+ * @param query: mongodb query
  * @author Bindu Latha Nuthalapati
  * @version 1.0
 */
-mongoController.find = (collectionName) => {
+mongoController.find = (collectionName, query) => {
     return new Promise((resolve, reject) => {
         try {
             getMongoConnection().then((connection) => {
-                connection.collection(collectionName).find({}, (err, doc) => {
+                connection.collection(collectionName).find(query).toArray((err, docs) => {
                     if (err) {
                         console.error(`Mongo Find Error : ${err}`);
                         let message = '';
@@ -112,7 +113,7 @@ mongoController.find = (collectionName) => {
                     } else {
                         resolve({
                             status: true,
-                            result: { data: doc._doc }
+                            result: { data: docs }
                         });
                     }
                 });
@@ -130,8 +131,8 @@ mongoController.find = (collectionName) => {
 
 /**
  * The delete method will delete the document from given collection name
- * @param collectionName: mongoose collection name
- * @param query: mongoose query
+ * @param collectionName: mongodb collection name
+ * @param query: mongodb query
  * @author Bindu Latha Nuthalapati
  * @version 1.0
 */
@@ -173,8 +174,8 @@ mongoController.delete = (collectionName, query) => {
 
 /**
  * The findOne method will find record based on the input query
- * @param collectionName: mongoose collection name
- * @param query: mongoose query
+ * @param collectionName: mongodb collection name
+ * @param query: mongodb query
  * @author Nishant Singh Gawer
  * @version 1.0
 */
@@ -209,8 +210,8 @@ mongoController.findOne = (collectionName, query) => {
 
 /**
  * The upsert method will update record / create if record not availiable based on the input query
- * @param collectionName: mongoose collection name
- * @param query: mongoose query
+ * @param collectionName: mongodb collection name
+ * @param query: mongodb query
  * @param payload: data to update / insert
  * @author Nishant Singh Gawer
  * @version 1.0

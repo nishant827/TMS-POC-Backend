@@ -40,4 +40,57 @@ router.post("/user/register", utils.verifyJWT, (req, res) => {
     }
 });
 
+router.get('/user/list', utils.verifyJWT, (req, res) => {
+    try {
+        mongoController.find(usersCollectionName, {}).then((result) => {
+            console.log("result in get users", result)
+            if (result && result.result && result.result.data) {
+                res.json({ status: 200, message: "Fetching users successful", data: result.result.data })
+            }
+        }, (error) => {
+            console.error(`Error occured in /user GET API : ${error}`);
+            res.status(500).send({ status: false, result: { error: e, message: `Error while fetching users try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /user GET API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error while fetching users try after some time.` } });
+    }
+})
+
+router.put('/user/update/:id', utils.verifyJWT, (req, res) => {
+    console.log("request in update",req)
+    try {
+        mongoController.update(usersCollectionName, req.body, { _id: req.params.id }).then(result => {
+            if (result && result.status) {
+                res.json({ status: 200, message: "User updated successfully" })
+            }
+        }, (error) => {
+            console.error(`Error occured in /user PUT API : ${error}`);
+            res.status(500).send({ status: false, result: { error: e, message: `Error while updating the user try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /user PUT API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error while updating the user try after some time.` } });
+    }
+})
+
+router.delete('/user/remove/:id', utils.verifyJWT, (req, res) => {
+    try {
+        mongoController.delete(usersCollectionName, { _id: req.params.id }).then(result => {
+            if (result && result.status) {
+                res.json({ status: 200, message: "User deleted successfully" })
+            }
+        }, (error) => {
+            console.error(`Error occured in /user DELETE API : ${error}`);
+            res.status(500).send({ status: false, result: { error: e, message: `Error while deleting the user try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /user DELETE API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error while deleting the user try after some time.` } });
+    }
+})
+
 module.exports = router;
