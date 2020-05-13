@@ -99,4 +99,30 @@ router.delete('/user/remove/:id', utils.verifyJWT, (req, res) => {
     }
 });
 
+router.get('/user/search/:text', utils.verifyJWT, (req, res) => {
+    try {
+        let roles = ['SA', 'ZH', 'TECH'];
+        let slicedInd = roles.findIndex((role) => role === req.user.role)
+        mongoController.find(usersCollectionName, {
+            role: { $in: roles.slice(slicedInd + 1) },
+            $or: [
+                { firstName: { $regex: req.params.text } },
+                { lastName: { $regex: req.params.text } },
+                { email: { $regex: req.params.text } }
+            ]
+        }).then((result) => {
+            if (result && result.result && result.result.data) {
+                res.json({ status: 200, message: "Fetching users successful", data: result.result.data })
+            }
+        }, (error) => {
+            console.error(`Error occured in /user/search GET API : ${error}`);
+            res.status(500).send({ status: false, result: { error: error, message: `Error while fetching the users list based on text given try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /user/search GET API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error whilefetching the users list based on text given try after some time.` } });
+    }
+})
+
 module.exports = router;
