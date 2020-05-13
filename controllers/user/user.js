@@ -9,28 +9,34 @@ router.post("/user/register", utils.verifyJWT, (req, res) => {
     let todaysDate = new Date();
     console.log(`${req.headers.host} Hit POST /user API at time-stamp : ${todaysDate.toLocaleDateString()} | ${todaysDate.toLocaleTimeString()}`);
     try {
-        if (req.body && req.body.email && req.body.password) {
-            mongoController.findOne(usersCollectionName, { email: req.body.email }).then((result) => {
-                if (result && result.result.data && result.result.data.email) {
-                    res.status(409).send({ status: false, result: { message: `User with the email : ${req.body.email} already exists try with different email.` } });
-                }
-                else {
-                    req.body.password = utils.getEncryptedText(req.body.password);
-                    mongoController.insert(usersCollectionName, req.body).then((success) => {
-                        res.status(200).send({ status: true, result: { data: success.result, message: "User Registration successfull." } });
-                    }, (error) => {
-                        console.error(`Error occured in /user POST API : ${error}`);
-                        res.status(500).send({ status: false, result: { error: error, message: `Error while registering user try after some time.` } });
-                    });
-                }
-            }, (error) => {
-                console.error(`Error occured in /user POST API : ${error}`);
-                res.status(500).send({ status: false, result: { error: error, message: `Error while registering user try after some time.` } });
-            });
-
+        // console.log(`Req user : ${JSON.stringify(req.user, null, 2)}`);
+        if (req.user.role == "SA" || req.user.role == "ZH") {
+            if (req.body && req.body.email && req.body.password) {
+                mongoController.findOne(usersCollectionName, { email: req.body.email }).then((result) => {
+                    if (result && result.result.data && result.result.data.email) {
+                        res.status(409).send({ status: false, result: { message: `User with the email : ${req.body.email} already exists try with different email.` } });
+                    }
+                    else {
+                        req.body.password = utils.getEncryptedText(req.body.password);
+                        req.body.managerId = req.user._id;
+                        mongoController.insert(usersCollectionName, req.body).then((success) => {
+                            res.status(200).send({ status: true, result: { data: success.result, message: "User Registration successfull." } });
+                        }, (error) => {
+                            console.error(`Error occured in /user POST API : ${error}`);
+                            res.status(500).send({ status: false, result: { error: error, message: `Error while registering user try after some time.` } });
+                        });
+                    }
+                }, (error) => {
+                    console.error(`Error occured in /user POST API : ${error}`);
+                    res.status(500).send({ status: false, result: { error: error, message: `Error while registering user try after some time.` } });
+                });
+            }
+            else {
+                res.status(422).send({ status: false, result: { error: `Missing required object fields.` } });
+            }
         }
         else {
-            res.status(422).send({ status: false, result: { error: `Missing required object fields.` } });
+            res.status(403).send({ status: false, result: { error: `You don't have permissions to create the user as your role is :${req.user.role}` } });
         }
     }
     catch (e) {

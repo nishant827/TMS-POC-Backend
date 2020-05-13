@@ -11,6 +11,9 @@ var mongoController = {};
 mongoController.insert = (collectionName, payload) => {
     return new Promise((resolve, reject) => {
         try {
+            if (payload.managerId) {
+                payload.managerId = mongoController.convertToObjectId(payload.managerId);
+            }
             getMongoConnection().then((connection) => {
                 connection.collection(collectionName).insert(payload, (err, doc) => {
                     if (err) {
