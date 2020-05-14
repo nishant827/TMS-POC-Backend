@@ -191,6 +191,9 @@ mongoController.delete = (collectionName, query) => {
 mongoController.findOne = (collectionName, query) => {
     return new Promise((resolve, reject) => {
         try {
+            if (query._id) {
+                query._id = mongoController.convertToObjectId(query._id);
+            }
             getMongoConnection().then((connection) => {
                 connection.collection(collectionName).findOne(query, (err, doc) => {
                     if (err) {

@@ -13,8 +13,8 @@ module.exports = {
                 "$ref": "#/definitions/User"
             }
         }, {
-            "name": "text",
-            "in": "path",
+            "name": "searchedText",
+            "in": "query",
             "required": true,
             "type": "string"
         }],
