@@ -22,4 +22,21 @@ router.post('/task/new', utils.verifyJWT, (req, res) => {
     }
 })
 
+router.get('/task/list', utils.verifyJWT, (req, res) => {
+    try {
+        mongoController.find(tasksCollectionName, {}).then((result) => {
+            if (result && result.result && result.result.data) {
+                res.json({ status: 200, message: "Fetching tasks successful", data: result.result.data })
+            }
+        }, (error) => {
+            console.error(`Error occured in /task GET API : ${error}`);
+            res.status(500).send({ status: false, result: { error: error, message: `Error while fetching the list of tasks try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /task GET API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error while fetching the list of tasks try after some time.` } });
+    }
+})
+
 module.exports = router
