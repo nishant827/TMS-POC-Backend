@@ -22,7 +22,8 @@ module.exports = {
             useUnifiedTopology: true
         },
         DB_COLLECTIONS: {
-            USERS_COLLECTION_NAME: process.env.USERS_COLLECTION_NAME || "users"
+            USERS_COLLECTION_NAME: process.env.USERS_COLLECTION_NAME || "users",
+            TASKS_COLLECTION_NAME: process.env.TASKS_COLLECTION_NAME || "Tasks"
         }
     },
     SWAGGER_CONFIG: {

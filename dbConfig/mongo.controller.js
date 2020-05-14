@@ -15,7 +15,7 @@ mongoController.insert = (collectionName, payload) => {
                 payload.managerId = mongoController.convertToObjectId(payload.managerId);
             }
             getMongoConnection().then((connection) => {
-                connection.collection(collectionName).insert(payload, (err, doc) => {
+                connection.collection(collectionName).insert(payload, { new: true }, (err, doc) => {
                     if (err) {
                         console.error(`Mongo Insertion Error : ${err}`);
                         let message = '';
@@ -28,9 +28,10 @@ mongoController.insert = (collectionName, payload) => {
                             result: { message: message }
                         });
                     } else {
+                        console.log("result after insert", doc)
                         resolve({
                             status: true,
-                            result: { data: doc._doc }
+                            result: { data: doc.ops[0] }
                         });
                     }
                 });

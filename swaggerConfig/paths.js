@@ -6,4 +6,6 @@ module.exports = {
     "/user/search": require("../controllers/user/swagger/paths/user.search.swagger.path"),
     "/user/{id}": require("../controllers/user/swagger/paths/user.findOne.swagger.path"),
     "/login": require("../controllers/authorization/swagger/paths/authorization.swagger.path"),
+
+    "/task/new": require("../controllers/TaskManagement/swagger/paths/task.new.swagger.path")
 }
