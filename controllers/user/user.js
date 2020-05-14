@@ -4,6 +4,7 @@ const mongoController = require("../../dbConfig/mongo.controller");
 const utils = require("../../utils/utils");
 const config = require("../../configurations/config");
 const usersCollectionName = config.MONGO_CONFIG.DB_COLLECTIONS.USERS_COLLECTION_NAME;
+const mongo = require('mongodb');
 
 router.post("/user/register", utils.verifyJWT, (req, res) => {
     let todaysDate = new Date();
@@ -99,4 +100,20 @@ router.delete('/user/remove/:id', utils.verifyJWT, (req, res) => {
     }
 });
 
+router.get('/user/:id' ,utils.verifyJWT,(req,res)=>{
+    try{
+        console.log("@@@@@@req.params.id@@@@@@@@@@",req.params.id);
+       mongoController.findOne(usersCollectionName,{_id: new mongo.ObjectID(req.params.id)}).then(result=>{
+        if (result && result.result && result.result.data) {
+            res.json({ status: 200, message: "Fetching user successful", data: result.result.data })
+        }
+      },(error)=>{
+          console.log("error1",error);
+        res.status(500).send({ status: false, result: { error: error, message: `Error while fetching user try after some time.` } });
+      })
+    }catch(e){
+        console.log("error2",e);
+        res.status(500).send({ status: false, result: { error: e, message: `Error while fetching user try after some time.` } });
+    }
+})
 module.exports = router;
