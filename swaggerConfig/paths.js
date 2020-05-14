@@ -8,5 +8,7 @@ module.exports = {
     "/login": require("../controllers/authorization/swagger/paths/authorization.swagger.path"),
 
     "/task/new": require("../controllers/TaskManagement/swagger/paths/task.new.swagger.path"),
-    "/task/list":require("../controllers/TaskManagement/swagger/paths/task.list.swagger.path")
+    "/task/list": require("../controllers/TaskManagement/swagger/paths/task.list.swagger.path"),
+    "/task/update/{id}": require("../controllers/TaskManagement/swagger/paths/task.update.swagger.path"),
+    "/task/remove/{id}":require("../controllers/TaskManagement/swagger/paths/task.remove.swagger.path")
 }

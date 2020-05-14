@@ -39,4 +39,38 @@ router.get('/task/list', utils.verifyJWT, (req, res) => {
     }
 })
 
+router.put('/task/update/:id', utils.verifyJWT, (req, res) => {
+    try {
+        mongoController.update(tasksCollectionName, req.body, { _id: req.params.id }).then(result => {
+            if (result && result.status) {
+                res.json({ status: 200, message: "Task updated successfully" })
+            }
+        }, (error) => {
+            console.error(`Error occured in /task PUT API : ${error}`);
+            res.status(500).send({ status: false, result: { error: error, message: `Error while updating the task try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /task PUT API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error while updating the task try after some time.` } });
+    }
+})
+
+router.delete('/task/remove/:id', utils.verifyJWT, (req, res) => {
+    try {
+        mongoController.delete(tasksCollectionName, { _id: req.params.id }).then((result) => {
+            if (result && result.status) {
+                res.json({ status: 200, message: "Task deleted successfully" })
+            }
+        }, (error) => {
+            console.error(`Error occured in /task DELETE API : ${error}`);
+            res.status(500).send({ status: false, result: { error: error, message: `Error while deleting the task try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /task DELETE API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error while deleting the task try after some time.` } });
+    }
+})
+
 module.exports = router
