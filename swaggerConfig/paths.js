@@ -10,5 +10,6 @@ module.exports = {
     "/task/new": require("../controllers/TaskManagement/swagger/paths/task.new.swagger.path"),
     "/task/list": require("../controllers/TaskManagement/swagger/paths/task.list.swagger.path"),
     "/task/update/{id}": require("../controllers/TaskManagement/swagger/paths/task.update.swagger.path"),
-    "/task/remove/{id}":require("../controllers/TaskManagement/swagger/paths/task.remove.swagger.path")
+    "/task/remove/{id}": require("../controllers/TaskManagement/swagger/paths/task.remove.swagger.path"),
+    "/task/{id}": require("../controllers/TaskManagement/swagger/paths/task.findOne.swagger.path")
 }

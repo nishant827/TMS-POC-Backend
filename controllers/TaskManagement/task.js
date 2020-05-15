@@ -73,4 +73,21 @@ router.delete('/task/remove/:id', utils.verifyJWT, (req, res) => {
     }
 })
 
+router.get('/task/:id', utils.verifyJWT, (req, res) => {
+    try {
+        mongoController.findOne(tasksCollectionName, { _id: req.params.id }).then((result) => {
+            if (result && result.result && result.result.data) {
+                res.json({ status: 200, message: "Task fetched successfully", data: result.result.data })
+            }
+        }, (error) => {
+            console.error(`Error occured in /task GET By ID API : ${error}`);
+            res.status(500).send({ status: false, result: { error: error, message: `Error while fetching the task try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /task GET By ID API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error whilefetching the task try after some time.` } });
+    }
+})
+
 module.exports = router
