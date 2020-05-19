@@ -121,7 +121,7 @@ router.get('/user/search', utils.verifyJWT, (req, res) => {
     }
     catch (e) {
         console.error(`Error catched in /user/search GET API : ${e}`);
-        res.status(500).send({ status: false, result: { error: e, message: `Error whilefetching the users list based on text given try after some time.` } });
+        res.status(500).send({ status: false, result: { error: e, message: `Error while fetching the users list based on text given try after some time.` } });
     }
 })
 
@@ -138,7 +138,24 @@ router.get('/user/:id', utils.verifyJWT, (req, res) => {
     }
     catch (e) {
         console.error(`Error catched in /user GET By ID API : ${e}`);
-        res.status(500).send({ status: false, result: { error: e, message: `Error whilefetching the user try after some time.` } });
+        res.status(500).send({ status: false, result: { error: e, message: `Error while fetching the user try after some time.` } });
+    }
+})
+
+router.get('/user/userType/list', utils.verifyJWT, (req, res) => {
+    try {
+        mongoController.find(usersCollectionName, { role: req.query.userType }).then((result) => {
+            if (result && result.result && result.result.data) {
+                res.json({ status: 200, message: "Users fetched successfully", data: result.result.data })
+            }
+        }, (error) => {
+            console.error(`Error occured in /user GET By userType API : ${error}`);
+            res.status(500).send({ status: false, result: { error: error, message: `Error while fetching the users try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /user GET By userType API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error while fetching the users try after some time.` } });
     }
 })
 
