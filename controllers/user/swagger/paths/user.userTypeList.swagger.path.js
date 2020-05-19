@@ -7,6 +7,16 @@ module.exports = {
         "summary": "Users fetching by userType in system",
         "description": "Users fetching by userType in system",
         "parameters": [{
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "type": "number"
+        }, {
+            "name": "offset",
+            "in": "query",
+            "required": true,
+            "type": "number"
+        }, {
             "name": "userType",
             "in": "query",
             "required": true,

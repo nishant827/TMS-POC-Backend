@@ -7,6 +7,16 @@ module.exports = {
         "summary": "Fetches all users which matches the given input",
         "description": "Fetches all users in system",
         "parameters": [{
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "type": "number"
+        }, {
+            "name": "offset",
+            "in": "query",
+            "required": true,
+            "type": "number"
+        }, {
             "description": "List of users which matches the given input",
             "name": "Description",
             "schema": {

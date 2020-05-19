@@ -24,9 +24,9 @@ router.post('/task/new', utils.verifyJWT, (req, res) => {
 
 router.get('/task/list', utils.verifyJWT, (req, res) => {
     try {
-        mongoController.find(tasksCollectionName, {}).then((result) => {
+        mongoController.find(tasksCollectionName, {}, req.query.limit, req.query.offset).then((result) => {
             if (result && result.result && result.result.data) {
-                res.json({ status: 200, message: "Fetching tasks successful", data: result.result.data })
+                res.json({ status: 200, message: "Fetching tasks successful", data: result.result.data, count: result.result.count })
             }
         }, (error) => {
             console.error(`Error occured in /task GET API : ${error}`);

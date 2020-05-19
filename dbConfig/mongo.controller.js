@@ -101,11 +101,11 @@ mongoController.update = (collectionName, payload, query) => {
  * @author Bindu Latha Nuthalapati
  * @version 1.0
 */
-mongoController.find = (collectionName, query) => {
+mongoController.find = (collectionName, query, limit, offset) => {
     return new Promise((resolve, reject) => {
         try {
             getMongoConnection().then((connection) => {
-                connection.collection(collectionName).find(query).toArray((err, docs) => {
+                connection.collection(collectionName).find(query).skip(parseInt(offset)).limit(parseInt(limit)).toArray((err, docs) => {
                     if (err) {
                         console.error(`Mongo Find Error : ${err}`);
                         let message = '';
@@ -118,10 +118,23 @@ mongoController.find = (collectionName, query) => {
                             result: { message: message }
                         });
                     } else {
-                        resolve({
-                            status: true,
-                            result: { data: docs }
-                        });
+                        connection.collection(collectionName).count({}, (errr, count) => {
+                            if (errr) {
+                                for (let key in errr.errors) {
+                                    message = errr.errors[key].message;
+                                    console.error("message", errr.errors[key].message)
+                                }
+                                reject({
+                                    status: false,
+                                    result: { message: message }
+                                });
+                            } else {
+                                resolve({
+                                    status: true,
+                                    result: { data: docs, count: count }
+                                });
+                            }
+                        })
                     }
                 });
             }, (error) => {

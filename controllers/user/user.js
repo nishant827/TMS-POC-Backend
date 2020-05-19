@@ -47,10 +47,10 @@ router.post("/user/register", utils.verifyJWT, (req, res) => {
 
 router.get('/user/list', utils.verifyJWT, (req, res) => {
     try {
-        mongoController.find(usersCollectionName, {}).then((result) => {
+        mongoController.find(usersCollectionName, {}, req.query.limit, req.query.offset).then((result) => {
             // console.log("result in get users", result)
             if (result && result.result && result.result.data) {
-                res.json({ status: 200, message: "Fetching users successful", data: result.result.data })
+                res.json({ status: 200, message: "Fetching users successful", data: result.result.data, count: result.result.count })
             }
         }, (error) => {
             console.error(`Error occured in /user GET API : ${error}`);
@@ -110,9 +110,9 @@ router.get('/user/search', utils.verifyJWT, (req, res) => {
                 { lastName: { $regex: req.query.searchedText } },
                 { email: { $regex: req.query.searchedText } }
             ]
-        }).then((result) => {
+        }, req.query.limit, req.query.offset).then((result) => {
             if (result && result.result && result.result.data) {
-                res.json({ status: 200, message: "Fetching users successful", data: result.result.data })
+                res.json({ status: 200, message: "Fetching users successful", data: result.result.data, count: result.result.count })
             }
         }, (error) => {
             console.error(`Error occured in /user/search GET API : ${error}`);
@@ -144,9 +144,9 @@ router.get('/user/:id', utils.verifyJWT, (req, res) => {
 
 router.get('/user/userType/list', utils.verifyJWT, (req, res) => {
     try {
-        mongoController.find(usersCollectionName, { role: req.query.userType }).then((result) => {
+        mongoController.find(usersCollectionName, { role: req.query.userType }, req.query.limit, req.query.offset).then((result) => {
             if (result && result.result && result.result.data) {
-                res.json({ status: 200, message: "Users fetched successfully", data: result.result.data })
+                res.json({ status: 200, message: "Users fetched successfully", data: result.result.data, count: result.result.count })
             }
         }, (error) => {
             console.error(`Error occured in /user GET By userType API : ${error}`);
