@@ -4,10 +4,6 @@ const config = require("../../../configurations/config");
 const tasksCollectionName = config.MONGO_CONFIG.DB_COLLECTIONS.TASKS_COLLECTION_NAME;
 const usersCollectionName = config.MONGO_CONFIG.DB_COLLECTIONS.USERS_COLLECTION_NAME;
 
-var techinicianSchema = Schema({
-    id: { type: Schema.Types.ObjectId, ref: usersCollectionName },
-    name: String
-}, { _id: false })
 
 var taskModel = () => {
     var taskSchema = Schema({
@@ -16,7 +12,7 @@ var taskModel = () => {
         taskType: String,
         taskTitle: String,
         taskDescription: String,
-        technicians: [techinicianSchema],
+        technicians: [{ type: Schema.Types.ObjectId, ref: 'users', autopopulate: true }],
         startDate: { type: Date },
         estimatedEndDate: { type: Date },
         status: String,
