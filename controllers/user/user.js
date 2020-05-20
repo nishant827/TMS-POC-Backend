@@ -48,9 +48,11 @@ router.post("/user/register", utils.verifyJWT, (req, res) => {
 router.get('/user/list', utils.verifyJWT, (req, res) => {
     try {
         mongoController.find(usersCollectionName, {}, req.query.limit, req.query.offset).then((result) => {
-            // console.log("result in get users", result)
+            console.log("result in get users", req.user)
             if (result && result.result && result.result.data) {
-                res.json({ status: 200, message: "Fetching users successful", data: result.result.data, count: result.result.count })
+                let usersArr = result.result.data.filter((item) => String(item._id) !== String(req.user._id))
+                console.log("usresArr",usersArr)
+                res.json({ status: 200, message: "Fetching users successful", data: usersArr, count: result.result.count })
             }
         }, (error) => {
             console.error(`Error occured in /user GET API : ${error}`);
