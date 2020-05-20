@@ -59,7 +59,7 @@ const usersSchema = new Schema({
 
     managerId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+        ref: usersCollectionName,
         required: true
     },
 
