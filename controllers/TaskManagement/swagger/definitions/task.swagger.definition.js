@@ -17,17 +17,8 @@ module.exports = {
         "technicians": {
             "type": "array",
             "items": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                }
+                "$ref": "#/definitions/User"
             },
-            "additionalProperties": true,
             "uniqueItems": false
         },
         "address": {

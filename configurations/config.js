@@ -23,7 +23,7 @@ module.exports = {
         },
         DB_COLLECTIONS: {
             USERS_COLLECTION_NAME: process.env.USERS_COLLECTION_NAME || "users",
-            TASKS_COLLECTION_NAME: process.env.TASKS_COLLECTION_NAME || "Tasks"
+            TASKS_COLLECTION_NAME: process.env.TASKS_COLLECTION_NAME || "tasks"
         }
     },
     SWAGGER_CONFIG: {
