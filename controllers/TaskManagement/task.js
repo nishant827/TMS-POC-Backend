@@ -7,7 +7,7 @@ const tasksCollectionName = config.MONGO_CONFIG.DB_COLLECTIONS.TASKS_COLLECTION_
 
 router.post('/task/new', utils.verifyJWT, (req, res) => {
     try {
-        mongoController.insert(tasksCollectionName, req.body).then((result) => {
+        mongoController.insert(tasksCollectionName, { ...req.body, createdBy: req.user._id }).then((result) => {
             if (result && result.result && result.result.data) {
                 res.json({ status: 200, message: "Task created succesfully", data: result.result.data })
             }
@@ -24,7 +24,17 @@ router.post('/task/new', utils.verifyJWT, (req, res) => {
 
 router.get('/task/list', utils.verifyJWT, (req, res) => {
     try {
-        mongoController.find(tasksCollectionName, {}, req.query.limit, req.query.offset).then((result) => {
+        let query = {}
+        if (req.user.role === "SA") query = {}
+        else if (req.user.role === "ZH") query = { createdBy: req.user._id }
+        else if (req.user.role === "TECH") query = { technicians: { $elemMatch: { _id: String(req.user._id) } } }
+        console.log("query", query)
+        mongoController.find(
+            tasksCollectionName,
+            query,
+            req.query.limit,
+            req.query.offset
+        ).then((result) => {
             if (result && result.result && result.result.data) {
                 res.json({ status: 200, message: "Fetching tasks successful", data: result.result.data, count: result.result.count })
             }

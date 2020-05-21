@@ -51,10 +51,9 @@ router.get('/user/list', utils.verifyJWT, (req, res) => {
         let slicedInd = roles.findIndex((role) => role === req.user.role)
         mongoController.find(
             usersCollectionName,
-            { role: { $in: slicedInd !== 0 ? roles.slice(slicedInd + 1) : roles } },
+            { _id: { $ne: req.user._id }, role: { $in: slicedInd !== 0 ? roles.slice(slicedInd + 1) : roles } },
             req.query.limit,
-            req.query.offset,
-            { _id: { $ne: req.user._id }, role: { $in: slicedInd !== 0 ? roles.slice(slicedInd + 1) : roles } }
+            req.query.offset
         ).then((result) => {
             console.log("result in get users", req.user)
             if (result && result.result && result.result.data) {
@@ -114,21 +113,13 @@ router.get('/user/search', utils.verifyJWT, (req, res) => {
         let roles = ['SA', 'ZH', 'TECH'];
         let slicedInd = roles.findIndex((role) => role === req.user.role)
         mongoController.find(usersCollectionName, {
-            role: { $in: roles.slice(slicedInd + 1) },
+            _id: { $ne: req.user._id }, role: { $in: slicedInd !== 0 ? roles.slice(slicedInd + 1) : roles },
             $or: [
                 { firstName: { $regex: req.query.searchedText } },
                 { lastName: { $regex: req.query.searchedText } },
                 { email: { $regex: req.query.searchedText } }
             ]
-        }, req.query.limit, req.query.offset,
-            {
-                _id: { $ne: req.user._id }, role: { $in: slicedInd !== 0 ? roles.slice(slicedInd + 1) : roles },
-                $or: [
-                    { firstName: { $regex: req.query.searchedText } },
-                    { lastName: { $regex: req.query.searchedText } },
-                    { email: { $regex: req.query.searchedText } }
-                ]
-            }
+        }, req.query.limit, req.query.offset
         ).then((result) => {
             if (result && result.result && result.result.data) {
                 res.json({ status: 200, message: "Fetching users successful", data: result.result.data, count: result.result.count })
@@ -165,10 +156,9 @@ router.get('/user/userType/list', utils.verifyJWT, (req, res) => {
     try {
         mongoController.find(
             usersCollectionName,
-            { role: req.query.userType },
+            { _id: { $ne: req.user._id }, role: req.query.userType },
             req.query.limit,
-            req.query.offset,
-            { _id: { $ne: req.user._id }, role: req.query.userType }
+            req.query.offset
         ).then((result) => {
             if (result && result.result && result.result.data) {
                 res.json({ status: 200, message: "Users fetched successfully", data: result.result.data, count: result.result.count })
