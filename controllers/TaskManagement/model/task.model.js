@@ -17,7 +17,7 @@ var taskModel = () => {
         estimatedEndDate: { type: Date },
         status: String,
         item: String,
-        createdBy: { type: Schema.Types.ObjectId, ref: 'users' }
+        createdBy: { type: Schema.Types.ObjectId, ref: usersCollectionName }
     }, { timestamp: true, collection: tasksCollectionName })
 
     taskSchema.plugin(autopopulate)
