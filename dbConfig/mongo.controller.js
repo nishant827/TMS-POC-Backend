@@ -101,7 +101,7 @@ mongoController.update = (collectionName, payload, query) => {
  * @author Bindu Latha Nuthalapati
  * @version 1.0
 */
-mongoController.find = (collectionName, query, limit, offset) => {
+mongoController.find = (collectionName, query, limit, offset, countQuery) => {
     return new Promise((resolve, reject) => {
         try {
             getMongoConnection().then((connection) => {
@@ -118,7 +118,7 @@ mongoController.find = (collectionName, query, limit, offset) => {
                             result: { message: message }
                         });
                     } else {
-                        connection.collection(collectionName).count({}, (errr, count) => {
+                        connection.collection(collectionName).count(countQuery || {}, (errr, count) => {
                             if (errr) {
                                 for (let key in errr.errors) {
                                     message = errr.errors[key].message;
