@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-const autopopulate = require('mongoose-autopopulate')
 const config = require("../../../configurations/config");
 const tasksCollectionName = config.MONGO_CONFIG.DB_COLLECTIONS.TASKS_COLLECTION_NAME;
 const usersCollectionName = config.MONGO_CONFIG.DB_COLLECTIONS.USERS_COLLECTION_NAME;
@@ -12,15 +11,13 @@ var taskModel = () => {
         taskType: String,
         taskTitle: String,
         taskDescription: String,
-        technicians: [{ type: Schema.Types.ObjectId, ref: usersCollectionName, autopopulate: true }],
+        technicians: [{ type: Schema.Types.ObjectId, ref: usersCollectionName }],
         startDate: { type: Date },
         estimatedEndDate: { type: Date },
         status: String,
         item: String,
         createdBy: { type: Schema.Types.ObjectId, ref: usersCollectionName }
     }, { timestamp: true, collection: tasksCollectionName })
-
-    taskSchema.plugin(autopopulate)
 
     return mongoose.model(tasksCollectionName, taskSchema)
 }

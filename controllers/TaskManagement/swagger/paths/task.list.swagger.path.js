@@ -6,23 +6,26 @@ module.exports = {
         ],
         "summary": "Fetches all tasks in system",
         "description": "Fetches all tasks in system",
-        "parameters": [{
-            "name": "limit",
-            "in": "query",
-            "required": true,
-            "type": "number"
-        }, {
-            "name": "offset",
-            "in": "query",
-            "required": true,
-            "type": "number"
-        }, {
-            "description": "List of tasks that are available in the system",
-            "name": "Description",
-            "schema": {
-                "$ref": "#/definitions/Task"
+        "parameters": [
+            {
+                "name": "offset",
+                "in": "query",
+                "required": true,
+                "type": "number"
+            },
+            {
+                "name": "limit",
+                "in": "query",
+                "required": true,
+                "type": "number"
+            }, {
+                "description": "List of tasks that are available in the system",
+                "name": "Description",
+                "schema": {
+                    "$ref": "#/definitions/Task"
+                }
             }
-        }],
+        ],
         "produces": [
             "application/json"
         ],

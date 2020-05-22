@@ -17,9 +17,9 @@ module.exports = {
         "technicians": {
             "type": "array",
             "items": {
-                "$ref": "#/definitions/User"
-            },
-            "uniqueItems": false
+                "type": "string",
+                "uniqueItems": true
+            }
         },
         "address": {
             "type": "string",

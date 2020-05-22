@@ -14,6 +14,9 @@ mongoController.insert = (collectionName, payload) => {
             if (payload.managerId) {
                 payload.managerId = mongoController.convertToObjectId(payload.managerId);
             }
+            if (payload.createdBy) {
+                payload.createdBy = mongoController.convertToObjectId(payload.createdBy);
+            }
             getMongoConnection().then((connection) => {
                 connection.collection(collectionName).insert(payload, { new: true }, (err, doc) => {
                     if (err) {
@@ -28,7 +31,7 @@ mongoController.insert = (collectionName, payload) => {
                             result: { message: message }
                         });
                     } else {
-                        console.log("result after insert", doc)
+                        // console.log("result after insert", doc)
                         resolve({
                             status: true,
                             result: { data: doc.ops[0] }
@@ -271,6 +274,42 @@ mongoController.upsert = (collectionName, query, payload) => {
                 status: false,
                 result: { message: e.message }
             });
+        }
+    });
+}
+
+/**
+ * The aggregate method will join collections and give mixed output based on the input query
+ * @param collectionName: mongodb collection name
+ * @param query: mongodb query
+ * @author Nishant Singh Gawer
+ * @version 1.0
+*/
+mongoController.aggregate = (collectionName, query) => {
+    return new Promise((resolve, reject) => {
+        try {
+            getMongoConnection().then((connection) => {
+                connection.collection(collectionName).aggregate(query).toArray((err, doc) => {
+                    if (err || doc == null) {
+                        reject({
+                            status: false,
+                            result: { message: err }
+                        });
+                    } else {
+                        resolve({
+                            status: true,
+                            result: { data: doc }
+                        });
+                    }
+                });
+            }, (error) => {
+                console.error(`Error in getting connection ${collectionName} : ${error}`);
+                reject(error);
+            });
+        }
+        catch (e) {
+            console.error(`Error catched in finding one document : ${e}`);
+            reject(e);
         }
     });
 }
