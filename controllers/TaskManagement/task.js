@@ -43,7 +43,8 @@ router.get('/task/list', utils.verifyJWT, (req, res) => {
         else if (req.user.role === "ZH") query = { createdBy: mongoController.convertToObjectId(req.user._id) }
         else if (req.user.role === "TECH") query = { technicians: { $in: [req.user._id] } }
         // console.log(`Query : ${JSON.stringify(query, null, 2)}`);
-        mongoController.aggregate(tasksCollectionName, taskHelper.getTaskListAggregateQuery(query, usersCollectionName, req.query))
+        // mongoController.aggregate(tasksCollectionName, taskHelper.getTaskListAggregateQuery(query, usersCollectionName, req.query))
+        mongoController.findAndAutoPopulate(tasksCollectionName, {}, req.query.limit, req.query.offset)
             .then((result) => {
                 if (result && result.result && result.result.data) {
                     // console.log(`Result : ${JSON.stringify(result, null, 2)}`);

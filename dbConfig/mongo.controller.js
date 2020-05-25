@@ -104,6 +104,62 @@ mongoController.update = (collectionName, payload, query) => {
  * @author Bindu Latha Nuthalapati
  * @version 1.0
 */
+mongoController.findAndAutoPopulate = (collectionName, query, limit, offset) => {
+    return new Promise((resolve, reject) => {
+        try {
+            getMongoConnection().then((connection) => {
+                connection.collection(collectionName).find(query, {}, { autopopulate: true })
+                    .skip(parseInt(offset)).limit(parseInt(limit)).toArray((err, docs) => {
+                        if (err) {
+                            console.error(`Mongo Find Error : ${err}`);
+                            let message = '';
+                            for (let key in err.errors) {
+                                message = err.errors[key].message;
+                                console.error("message", err.errors[key].message)
+                            }
+                            reject({
+                                status: false,
+                                result: { message: message }
+                            });
+                        } else {
+                            connection.collection(collectionName).count(query, (errr, count) => {
+                                if (errr) {
+                                    for (let key in errr.errors) {
+                                        message = errr.errors[key].message;
+                                        console.error("message", errr.errors[key].message)
+                                    }
+                                    reject({
+                                        status: false,
+                                        result: { message: message }
+                                    });
+                                } else {
+                                    resolve({
+                                        status: true,
+                                        result: { data: docs, count: count }
+                                    });
+                                }
+                            })
+                        }
+                    });
+            }, (error) => {
+                console.error(`Error in getting connection ${collectionName} : ${error}`);
+                reject(error);
+            });
+        }
+        catch (e) {
+            console.error(`Error catched while fetching the documents : ${e}`);
+            reject(e);
+        }
+    });
+}
+
+/**
+ * The find method will fetch all the documents from given collection name
+ * @param collectionName: mongodb collection name
+ * @param query: mongodb query
+ * @author Bindu Latha Nuthalapati
+ * @version 1.0
+*/
 mongoController.find = (collectionName, query, limit, offset) => {
     return new Promise((resolve, reject) => {
         try {

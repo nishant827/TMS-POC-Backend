@@ -5,7 +5,8 @@ module.exports = {
     "/user/remove/{id}": require("../controllers/user/swagger/paths/user.remove.swagger.path"),
     "/user/search": require("../controllers/user/swagger/paths/user.search.swagger.path"),
     "/user/{id}": require("../controllers/user/swagger/paths/user.findOne.swagger.path"),
-    "/user/userType/list":require("../controllers/user/swagger/paths/user.userTypeList.swagger.path"),
+    "/user/userType/list": require("../controllers/user/swagger/paths/user.userTypeList.swagger.path"),
+    "/user/update/password": require("../controllers/user/swagger/paths/user.update.password.swagger.path"),
     "/login": require("../controllers/authorization/swagger/paths/authorization.swagger.path"),
 
     "/task/new": require("../controllers/TaskManagement/swagger/paths/task.new.swagger.path"),

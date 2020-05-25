@@ -45,6 +45,35 @@ router.post("/user/register", utils.verifyJWT, (req, res) => {
     }
 });
 
+router.put('/user/update/password', utils.verifyJWT, (req, res) => {
+    try {
+        mongoController.findOne(usersCollectionName, { _id: req.user._id }).then((result) => {
+            if (result && result.result && result.result.data) {
+                let decryptedPassword = utils.getdecryptedText(result.result.data.password)
+                if (req.body.currentPassword === decryptedPassword) {
+                    mongoController.update(usersCollectionName, { password: utils.getEncryptedText(req.body.newPassword) }, { _id: req.user._id }).then((updateResponse) => {
+                        if (updateResponse && updateResponse.status) {
+                            res.json({ status: 200, message: "User password updated successfully" })
+                        }
+                    }, (error) => {
+                        console.error(`Error occured in /user UPDATE PASSWORD API : ${error}`);
+                        res.status(500).send({ status: false, result: { error: error, message: `Error while updating the user password try after some time.` } });
+                    })
+                } else {
+                    res.json({ status: 501, message: "Current password doesn't match" })
+                }
+            }
+        }, (error) => {
+            console.error(`Error occured in /user FINDONE PASSWORD API : ${error}`);
+            res.status(500).send({ status: false, result: { error: error, message: `Error while updating the user password try after some time.` } });
+        })
+    }
+    catch (e) {
+        console.error(`Error catched in /user PUT PASSWORD API : ${e}`);
+        res.status(500).send({ status: false, result: { error: e, message: `Error while updating the user password try after some time.` } });
+    }
+})
+
 router.get('/user/list', utils.verifyJWT, (req, res) => {
     try {
         let roles = ['SA', 'ZH', 'TECH'];
